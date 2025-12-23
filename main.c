@@ -7,15 +7,45 @@
 const int SCREEN_WIDTH = 400;
 const int SCREEN_HEIGHT = 600;
 
+#define T_SIZE 30
+
+//funzione che disegna la griglia
+void draw_board(SDL_Renderer* renderer, game_state* game){
+    for (int i = 0; i < ROWS; i++){
+        for (int j = 0; j < COLS; j++){
+            SDL_Rect rect;
+            rect.x = j * T_SIZE; //il pixel in cui comincia il quadratino (in colonna)
+            rect.y = i * T_SIZE; //il pixel in cui comincia il quadratino (in riga)
+            rect.w = T_SIZE; //larghezza del quadratino
+            rect.h = T_SIZE; //altezza del quadratino
+
+            if (game->board[i][j] == 0){ //se la cella è vuota disegna solo il bordo grigio
+                SDL_SetRenderDrawColor(renderer, 40, 40, 40, 255);
+                SDL_RenderDrawRect(renderer, &rect);
+            } else { //se è piena disegna un blocco rosso e il bordo nero
+                SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+                SDL_RenderFillRect(renderer, &rect); 
+
+                SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+                SDL_RenderDrawRect(renderer, &rect);
+            }
+        }
+    }
+}
+
 
 int main(int argc, char* args[]){
 
     //test per vedere se il terminale stampa correttamente
-    //game_state game;
-    //init_game(&game);
+    game_state game;
+    init_game(&game);
 
-    //printf("il gioco esiste e il punteggio iniziale è: %d\n", game.score);
-    
+    printf("il gioco esiste e il punteggio iniziale è: %d\n", game.score);
+
+    //test di prova stampa blocco
+    game.board[10][5] = 1;
+    game.board[19][0] = 1;
+
     //inizializzazione di SDL
     if (SDL_Init(SDL_INIT_VIDEO) < 0){
         printf("Errore di inizializzazione: %s\n", SDL_GetError());
@@ -49,6 +79,8 @@ int main(int argc, char* args[]){
         }
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); //colore nero
         SDL_RenderClear(renderer); //cancella lo schermo con il colore nero
+
+        draw_board(renderer, &game);
 
         SDL_RenderPresent(renderer); //mostra il risultato
     }
