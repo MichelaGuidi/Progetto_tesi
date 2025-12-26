@@ -9,7 +9,7 @@ const int SCREEN_HEIGHT = 600;
 
 #define T_SIZE 30
 
-//funzione che disegna la griglia
+//funzione che disegna la griglia con i pezzi fissi
 void draw_board(SDL_Renderer* renderer, game_state* game){
     for (int i = 0; i < ROWS; i++){
         for (int j = 0; j < COLS; j++){
@@ -30,6 +30,26 @@ void draw_board(SDL_Renderer* renderer, game_state* game){
                 SDL_RenderDrawRect(renderer, &rect);
             }
         }
+    }
+}
+
+//funzione che disegna un pezzo sulla griglia che dovrà muoversi
+void draw_active_piece(SDL_Renderer* renderer, game_state* game){
+    SDL_SetRenderDrawColor(renderer, 252, 0, 252, 255);
+
+    for (int i = 0; i < 5; i++){
+        SDL_Rect rect;
+
+        rect.x = (game->active_x + game->active_piece.shape[i].dx) * T_SIZE;
+        rect.y = (game->active_y + game->active_piece.shape[i].dy) * T_SIZE;
+        rect.w = T_SIZE;
+        rect.h = T_SIZE;
+
+        SDL_RenderFillRect(renderer, &rect);
+
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderDrawRect(renderer, &rect);
+        SDL_SetRenderDrawColor(renderer, 252, 0, 252, 255);
     }
 }
 
@@ -81,6 +101,7 @@ int main(int argc, char* args[]){
         SDL_RenderClear(renderer); //cancella lo schermo con il colore nero
 
         draw_board(renderer, &game);
+        draw_active_piece(renderer, &game);
 
         SDL_RenderPresent(renderer); //mostra il risultato
     }
